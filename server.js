@@ -28,4 +28,26 @@ var createPlayer = function(playerName) {
 };
 var getMap = function() {
   return map;
+};
+var updatePosition = function(player) {
+  var player = map.players[map.players.indexOf(player)];
+  player.x = player.x;
+  player.y = player.y;
+};
+var checkSkittles = function() {
+  console.log(map.skittles.length, map.players.length);
+  for(var skittle of map.skittles) {
+    for(var player of map.players) {
+      var xDiff = player.x - skittle.x;
+      var yDiff = player.y - skittle.y;
+      var distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+      if(distance < 10) {
+	console.log(player.x, skittle.x, player.y, skittle.y, player.score);
+        player.score += 0.1;
+        map.skittles.splice(map.skittles.indexOf(skittle), 1);
+        break;
+      }
+    }
+  }
 }
+setInterval(checkSkittles, 10);

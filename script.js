@@ -48,15 +48,24 @@ $(function() {
   });
   setInterval(function() {
     var speed = 10/player.score;
+    var moved = false;
     if(keymap.indexOf(37) >= 0) {
       player.x = Math.max(player.x-speed, 0);
+      moved = true;
     } else if(keymap.indexOf(39) >= 0) {
       player.x = Math.min(player.x+speed, mapWidth);
+      moved = true;
     }
     if(keymap.indexOf(38) >= 0) {
       player.y = Math.max(player.y-speed, 0);
+      moved = true;
     } else if(keymap.indexOf(40) >= 0) {
       player.y = Math.min(player.y+speed, mapHeight);
+      moved = true;
+    }
+    
+    if(moved) {
+      updatePosition(player);
     }
   }, 10);
 
