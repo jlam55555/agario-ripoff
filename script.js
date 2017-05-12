@@ -8,16 +8,29 @@ $(function() {
   // connect to websocket
   var socket = io.connect("https://agario-ripoff-server.herokuapp.com/");
 
-  var player = createPlayer("Jonathan");
+  var player, mapWidth, mapHeight, map;
+  socket.emit("name", "Jonathan");
+  socket.on("player", function(playerObject) {
+    player = playerObject;
+  });
+  socket.on("mapDimensions", function(width, height) {
+    mapWidth = width;
+    mapHeight = height;
+  });
+  socket.on("map", function(mapObject) {
+    map = mapObject;
+  });
   var draw = function() {
+    if(!player || !map) {
+      requestAnimationFrame(draw);
+      return;
+    }
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, width, height);
   
     ctx.fillStyle = "white";
     ctx.fillRect(width/2-player.x-5, height/2-player.y-5, 1010, 1010);
 
-    var map = getMap();
-   
     // draw skittles
     for(skittle of map.skittles) {
       ctx.fillStyle = skittle.color;
@@ -50,6 +63,7 @@ $(function() {
     }
   });
   setInterval(function() {
+    if(!player || !map) return;
     var speed = 10/player.score;
     var moved = false;
     if(keymap.indexOf(37) >= 0) {
@@ -68,7 +82,7 @@ $(function() {
     }
     
     if(moved) {
-      updatePosition(player);
+      socket.emit("update", player.x, player.y);
     }
   }, 10);
 
