@@ -44,7 +44,7 @@ $(function() {
     ctx.strokeStyle = "black";
     ctx.fillStyle = "turquoise";
     ctx.beginPath();
-    ctx.arc(width/2, height/2, player.score+10, 0, 2*Math.PI);
+    ctx.arc(width/2, height/2, player.score*10, 0, 2*Math.PI);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
