@@ -9,7 +9,7 @@ $(function() {
   var socket = io.connect("https://agario-ripoff-server.herokuapp.com/");
 
   var player, mapWidth, mapHeight, map;
-  socket.emit("name", "Jonathan");
+  socket.emit("name", prompt("Enter your name below:"));
   socket.on("player", function(playerObject) {
     player = playerObject;
   });
@@ -30,10 +30,13 @@ $(function() {
     ctx.fillRect(0, 0, width, height);
   
     ctx.fillStyle = "white";
-    ctx.fillRect(width/2-player.x-5, height/2-player.y-5, 1010, 1010);
+    ctx.fillRect(width/2-player.x-5, height/2-player.y-5, mapWidth+10, mapHeight+10);
 
     // draw skittles
     for(skittle of map.skittles) {
+      if(Math.abs(skittle.x-player.x) > width/2 || Math.abs(skittle.y-player.y) > height/2) {
+        continue;
+      }
       ctx.fillStyle = skittle.color;
       ctx.beginPath();
       ctx.arc(skittle.x-player.x+width/2, skittle.y-player.y+height/2, 5, 0, Math.PI*2);
@@ -41,9 +44,24 @@ $(function() {
       ctx.fill();
     }
 
-    // draw player
+    // draw other players
     ctx.strokeStyle = "black";
-    ctx.fillStyle = "turquoise";
+    for(otherPlayer of map.players) {
+      if(otherPlayer.id == player.id) {
+        continue; 
+      }
+      ctx.fillStyle = otherPlayer.color;
+      ctx.beginPath();
+      ctx.arc(otherPlayer.x-player.x+width/2, otherPlayer.y-player.y+height/2, otherPlayer.score*10, 0, 2*Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // draw player
+    ctx.fillStyle = player.color;
+    ctx.lineWidth = 5
+    ctx.strokeStyle = "gold";
     ctx.beginPath();
     ctx.arc(width/2, height/2, player.score*10, 0, 2*Math.PI);
     ctx.closePath();
