@@ -5,6 +5,9 @@ $(function() {
     height = canvas.height = $("#canvas").height();
   }).resize();
 
+  // connect to websocket
+  var socket = io.connect("https://agario-ripoff-server.herokuapp.com/");
+
   var player = createPlayer("Jonathan");
   var draw = function() {
     ctx.fillStyle = "black";
