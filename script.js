@@ -64,7 +64,8 @@ $(function() {
   });
   setInterval(function() {
     if(!player || !map) return;
-    var speed = 10/player.score;
+    //var speed = 10/player.score;
+    var speed = 4*Math.pow(0.5, player.score-1)+1;
     var moved = false;
     if(keymap.indexOf(37) >= 0) {
       player.x = Math.max(player.x-speed, 0);
