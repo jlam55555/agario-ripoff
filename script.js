@@ -17,8 +17,9 @@ $(function() {
     mapWidth = width;
     mapHeight = height;
   });
-  socket.on("map", function(mapObject) {
+  socket.on("mapScoreUpdate", function(mapObject, newScore) {
     map = mapObject;
+    player.score = newScore;
   });
   var draw = function() {
     if(!player || !map) {
@@ -83,7 +84,7 @@ $(function() {
     }
     
     if(moved) {
-      socket.emit("update", player.x, player.y);
+      socket.emit("positionUpdate", player.x, player.y);
     }
   }, 10);
 
