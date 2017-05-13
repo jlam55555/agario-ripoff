@@ -19,7 +19,7 @@ $(function() {
     $("#cover").animate({opacity: 0}, 500, function() {
       $(this).hide();
     });
-    play($(this).val());
+    play($("#name").val());
     $("#canvas").focus();
   });
 
@@ -28,7 +28,7 @@ $(function() {
     var socket = io.connect("https://agario-ripoff-server.herokuapp.com/");
 
     var player, mapWidth, mapHeight, map;
-    socket.emit("name", "Jonathan");
+    socket.emit("name", playerName);
     socket.on("player", function(playerObject) {
       player = playerObject;
     });
@@ -36,13 +36,14 @@ $(function() {
       mapWidth = width;
       mapHeight = height;
     });
-    socket.on("update", function(mapObject, newScore, newHealth, newX, newY) {
+    socket.on("update", function(mapObject, newScore, newHealth, newX, newY, newMoney) {
       map = mapObject;
       if(!player) return;
       player.score = newScore;
       player.health = newHealth;
       player.x = newX;
       player.y = newY;
+      player.money = newMoney;
     });
     socket.on("died", function() {
       $("#cover").show();
@@ -55,7 +56,7 @@ $(function() {
         requestAnimationFrame(draw);
         return;
       }
-      ctx.fillStyle = "#2c3e50";
+      ctx.fillStyle = "#95a5a6";
       ctx.fillRect(0, 0, width, height);
     
       ctx.fillStyle = "#bdc3c7";
@@ -109,6 +110,35 @@ $(function() {
       ctx.fillStyle = "#2ecc71";
       ctx.fillRect(width/2-8, height/2-player.score*10-13, Math.max(16*player.health, 0), 4);
 
+      // write money
+      ctx.fillStyle = "#2c3e50";
+      ctx.font = "16px Verdana";
+      ctx.fillText("Money: " + player.money, 50, 66);
+
+      // minimap
+      ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
+      ctx.fillRect(50, height-150, 100, 100);
+      ctx.fillStyle = "#f1c40f";
+      ctx.beginPath()
+      ctx.arc(50+player.x/mapWidth*100, height-150+player.y/mapHeight*100, 2, 0, Math.PI*2);
+      ctx.closePath();
+      ctx.fill();
+
+      // leaderboard
+      var players = map.players;
+      players.sort(function(a, b) {
+        return b.score - a.score;
+      }); 
+      ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
+      ctx.fillRect(width-350, 50, 300, (players.length+1) * 20);
+      ctx.fillStyle = "#2c3e50";
+      for(var playerObject in players) {
+        ctx.fillText((parseInt(playerObject)+1) + ". " + players[playerObject].name, width-335, 76+20*playerObject);
+        ctx.textAlign = "end";
+        ctx.fillText(Math.round((players[playerObject].score-1)*200), width-65, 76+20*playerObject);
+        ctx.textAlign = "start";
+      }
+
       requestAnimationFrame(draw);
     }
     draw();
@@ -123,41 +153,6 @@ $(function() {
         socket.emit("direction", newDirection);
       }
     });
-    /*var keymap = [];
-    $("#canvas").on("keydown keyup", function(event) {
-      if(event.type == "keydown" && keymap.indexOf(event.which) == -1) {
-        keymap.push(event.which);
-      } else if(event.type == "keyup") {
-        keymap.splice(keymap.indexOf(event.which), 1);
-      }
-    });
-    setInterval(function() {
-      if(!player || !map) return;
-      //var speed = 3*Math.pow(0.5, player.score-1)+0.5;
-      var speed = 2;
-      var moved = false;
-      if((keymap.indexOf(37) >= 0 || keymap.indexOf(39) >= 0) && (keymap.indexOf(38) >= 0 && keymap.indexOf(40) >= 0)) {
-        speed *= Math.sqrt(2)/2;
-      }
-      if(keymap.indexOf(37) >= 0) {
-        player.x = Math.max(player.x-speed, 0);
-        moved = true;
-      } else if(keymap.indexOf(39) >= 0) {
-        player.x = Math.min(player.x+speed, mapWidth);
-        moved = true;
-      }
-      if(keymap.indexOf(38) >= 0) {
-        player.y = Math.max(player.y-speed, 0);
-        moved = true;
-      } else if(keymap.indexOf(40) >= 0) {
-        player.y = Math.min(player.y+speed, mapHeight);
-        moved = true;
-      }
-      
-      if(moved) {
-        socket.emit("positionUpdate", player.x, player.y);
-      }
-    }, 20);*/
   };
 
 });
