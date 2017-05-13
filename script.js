@@ -36,10 +36,13 @@ $(function() {
       mapWidth = width;
       mapHeight = height;
     });
-    socket.on("mapScoreUpdate", function(mapObject, newScore, newHealth) {
+    socket.on("update", function(mapObject, newScore, newHealth, newX, newY) {
       map = mapObject;
+      if(!player) return;
       player.score = newScore;
       player.health = newHealth;
+      player.x = newX;
+      player.y = newY;
     });
     socket.on("died", function() {
       $("#cover").show();
@@ -111,7 +114,16 @@ $(function() {
     draw();
 
     // movement
-    var keymap = [];
+    var lastDirection = 0;
+    $("#canvas").on("mousemove", function(event) {
+      var newDirection = (event.pageX > width/2 ? 0 : 180)+Math.atan((event.pageY-height/2)/(event.pageX-width/2)) * 180/Math.PI;
+      newDirection = Math.round(newDirection/20)*20;
+      if(lastDirection != newDirection) {
+        lastDirection = newDirection;
+        socket.emit("direction", newDirection);
+      }
+    });
+    /*var keymap = [];
     $("#canvas").on("keydown keyup", function(event) {
       if(event.type == "keydown" && keymap.indexOf(event.which) == -1) {
         keymap.push(event.which);
@@ -121,7 +133,8 @@ $(function() {
     });
     setInterval(function() {
       if(!player || !map) return;
-      var speed = 3*Math.pow(0.5, player.score-1)+0.5;
+      //var speed = 3*Math.pow(0.5, player.score-1)+0.5;
+      var speed = 2;
       var moved = false;
       if((keymap.indexOf(37) >= 0 || keymap.indexOf(39) >= 0) && (keymap.indexOf(38) >= 0 && keymap.indexOf(40) >= 0)) {
         speed *= Math.sqrt(2)/2;
@@ -144,7 +157,7 @@ $(function() {
       if(moved) {
         socket.emit("positionUpdate", player.x, player.y);
       }
-    }, 20);
+    }, 20);*/
   };
 
 });
