@@ -36,14 +36,10 @@ $(function() {
       mapWidth = width;
       mapHeight = height;
     });
-    socket.on("update", function(mapObject, newScore, newHealth, newX, newY, newMoney) {
+    socket.on("update", function(mapObject, newPlayer) {
       map = mapObject;
       if(!player) return;
-      player.score = newScore;
-      player.health = newHealth;
-      player.x = newX;
-      player.y = newY;
-      player.money = newMoney;
+      player = newPlayer;
     });
     socket.on("died", function() {
       $("#cover").show();
@@ -97,7 +93,7 @@ $(function() {
       // draw player
       if(player.health < 0) return;
       ctx.fillStyle = player.color;
-      ctx.lineWidth=5;
+      ctx.lineWidth = 5;
       ctx.strokeStyle = "#f1c40f";
       ctx.beginPath();
       ctx.arc(width/2, height/2, player.score*10, 0, 2*Math.PI);
@@ -110,10 +106,15 @@ $(function() {
       ctx.fillStyle = "#2ecc71";
       ctx.fillRect(width/2-8, height/2-player.score*10-13, Math.max(16*player.health, 0), 4);
 
-      // write money
+      // write money and upgrades
+      ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
+      ctx.fillRect(50, 76, 300, 80);
       ctx.fillStyle = "#2c3e50";
       ctx.font = "16px Verdana";
       ctx.fillText("Money: " + player.money, 50, 66);
+      ctx.fillText("Health: " + player.upgrades.health, 60, 102);
+      ctx.fillText("Speed: " + player.upgrades.speed, 60, 122);
+      ctx.fillText("Damage: " + player.upgrades.damage, 60, 142);
 
       // minimap
       ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
