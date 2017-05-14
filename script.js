@@ -108,13 +108,14 @@ $(function() {
 
       // write money and upgrades
       ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
-      ctx.fillRect(50, 76, 300, 80);
+      ctx.fillRect(50, 76, 300, 100);
       ctx.fillStyle = "#2c3e50";
       ctx.font = "16px Verdana";
       ctx.fillText("Money: " + player.money, 50, 66);
-      ctx.fillText("Health: " + player.upgrades.health, 60, 102);
-      ctx.fillText("Speed: " + player.upgrades.speed, 60, 122);
-      ctx.fillText("Damage: " + player.upgrades.damage, 60, 142);
+      ctx.fillText("Health (1): " + player.upgrades.health + " | Cost: " + (player.upgrades.health+1), 60, 102);
+      ctx.fillText("Speed (2): " + player.upgrades.speed + " | Cost: " + (player.upgrades.speed+1), 60, 122);
+      ctx.fillText("Damage (3): " + player.upgrades.damage + " | Cost: " + (player.upgrades.damage+1), 60, 142);
+      ctx.fillText("Regen (4): " + player.upgrades.regen + " | Cost: " + (player.upgrades.regen+1), 60, 162);
 
       // minimap
       ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
@@ -154,6 +155,17 @@ $(function() {
         socket.emit("direction", newDirection);
       }
     });
+    $("#canvas").on("keydown", function(event) {
+      if(event.which == 97 || event.which == 49)
+        socket.emit("upgrade", "health");
+      else if(event.which == 98 || event.which == 50)
+        socket.emit("upgrade", "speed");
+      else if(event.which == 99 || event.which == 51) 
+        socket.emit("upgrade", "damage");
+      else if(event.which == 100 || event.which == 52)
+        socket.emit("upgrade", "regen");
+    });
+
   };
 
 });
