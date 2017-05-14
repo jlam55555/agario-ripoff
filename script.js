@@ -25,7 +25,7 @@ $(function() {
 
   // connect to websocket
   var play = function(playerName) {
-    var socket = io.connect("https://agario-ripoff-server.herokuapp.com/");
+    var socket = io.connect("https://agario-ripoff-server.herokuapp.com/", {"forceNew": true});
 
     var player, mapWidth, mapHeight, map;
     socket.emit("name", playerName);
