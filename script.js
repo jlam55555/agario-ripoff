@@ -15,7 +15,6 @@ $(function() {
       $("#enter").click();
   });
   $("#enter").click(function() {
-    $("#name").off();
     $("#cover").animate({opacity: 0}, 500, function() {
       $(this).hide();
     });
