@@ -45,7 +45,7 @@ $(function() {
       $("#cover").animate({opacity: 1}, 500);
       $("#canvas").off();
       keymap = [];
-      $("#name").focus();
+      $("#name").val(player.name).focus();
     });
     ctx.font = "16px Verdana";
     var draw = function() {
