@@ -90,13 +90,13 @@ $(function() {
         ctx.fillStyle = "#34495e";
         ctx.fillRect(otherPlayer.x-player.x+width/2-10, otherPlayer.y-player.y+height/2-otherPlayer.score*10-15, 20, 8);
         ctx.fillStyle = "#2ecc71";
-        ctx.fillRect(otherPlayer.x-player.x+width/2-8, otherPlayer.y-player.y+height/2-player.score*10-13, 16*player.health, 4);
+        ctx.fillRect(otherPlayer.x-player.x+width/2-8, otherPlayer.y-player.y+height/2-otherPlayer.score*10-13, 16*otherPlayer.health, 4);
       }
       ctx.textAlign = "start";
       ctx.font = "16px Verdana";
 
       // draw player
-      if(player.health < 0) return;
+      if(player.health <= 0) return;
       ctx.fillStyle = player.color;
       ctx.lineWidth = 5;
       ctx.strokeStyle = "#f1c40f";
