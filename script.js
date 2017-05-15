@@ -46,7 +46,9 @@ $(function() {
       $("#cover").animate({opacity: 1}, 500);
       $("#canvas").off();
       keymap = [];
+      $("#name").focus();
     });
+    ctx.font = "16px Verdana";
     var draw = function() {
       if(!player || !map) {
         requestAnimationFrame(draw);
@@ -73,6 +75,8 @@ $(function() {
       // draw other players
       ctx.strokeStyle = "#34495e";
       ctx.lineWidth = 5;
+      ctx.textAlign = "center";
+      ctx.font = "bold 16px Verdana";
       for(otherPlayer of map.players) {
         if(otherPlayer.id == player.id) {
           continue; 
@@ -83,12 +87,14 @@ $(function() {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+        ctx.fillText(otherPlayer.name, otherPlayer.x-player.x+width/2, otherPlayer.y-player.y+height/2-player.score*10-23);
         ctx.fillStyle = "#34495e";
         ctx.fillRect(otherPlayer.x-player.x+width/2-10, otherPlayer.y-player.y+height/2-otherPlayer.score*10-15, 20, 8);
-        ctx.lineWidth = 1;
         ctx.fillStyle = "#2ecc71";
         ctx.fillRect(otherPlayer.x-player.x+width/2-8, otherPlayer.y-player.y+height/2-player.score*10-13, 16*player.health, 4);
       }
+      ctx.textAlign = "start";
+      ctx.font = "16px Verdana";
 
       // draw player
       if(player.health < 0) return;
@@ -105,17 +111,18 @@ $(function() {
       ctx.lineWidth = 1;
       ctx.fillStyle = "#2ecc71";
       ctx.fillRect(width/2-8, height/2-player.score*10-13, Math.max(16*player.health, 0), 4);
+      ctx.fillStyle = "#2c3e50";
+      ctx.fillText(player.name, 50, height-160);
 
       // write money and upgrades
       ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
       ctx.fillRect(50, 76, 300, 100);
       ctx.fillStyle = "#2c3e50";
-      ctx.font = "16px Verdana";
       ctx.fillText("Money: " + player.money, 50, 66);
-      ctx.fillText("Health (1): " + player.upgrades.health + " | Cost: " + (player.upgrades.health+1), 60, 102);
-      ctx.fillText("Speed (2): " + player.upgrades.speed + " | Cost: " + (player.upgrades.speed+1), 60, 122);
-      ctx.fillText("Damage (3): " + player.upgrades.damage + " | Cost: " + (player.upgrades.damage+1), 60, 142);
-      ctx.fillText("Regen (4): " + player.upgrades.regen + " | Cost: " + (player.upgrades.regen+1), 60, 162);
+      ctx.fillText("Health (1): " + player.upgrades.health + " | Cost: " + (player.upgrades.health+1), 65, 102);
+      ctx.fillText("Speed (2): " + player.upgrades.speed + " | Cost: " + (player.upgrades.speed+1), 65,  122);
+      ctx.fillText("Damage (3): " + player.upgrades.damage + " | Cost: " + (player.upgrades.damage+1), 65, 142);
+      ctx.fillText("Regen (4): " + player.upgrades.regen + " | Cost: " + (player.upgrades.regen+1), 65, 162);
 
       // minimap
       ctx.fillStyle = "rgba(52, 73, 94, 0.2)";
