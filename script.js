@@ -77,7 +77,7 @@ $(function() {
       ctx.textAlign = "center";
       ctx.font = "bold 16px Verdana";
       for(otherPlayer of map.players) {
-        if(otherPlayer.id == player.id) {
+        if(otherPlayer.id == player.id || otherPlayer.health <= 0) {
           continue; 
         }
         ctx.fillStyle = otherPlayer.color;
