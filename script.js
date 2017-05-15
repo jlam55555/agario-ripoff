@@ -7,7 +7,7 @@ $(function() {
     $("#name").css("top", height/2);
     $("#enter").css({
       top: height/2+75,
-      left: (width-$("#enter").width())/2-20
+      left: (width-$("#enter").width())/2-40
     });
   }).resize();
   $("#name").keydown(function() {
@@ -147,21 +147,23 @@ $(function() {
         ctx.textAlign = "start";
       }
 
+      // redraw!
       requestAnimationFrame(draw);
     }
     draw();
 
     // movement
     var lastDirection = 0;
-    $("#canvas").on("mousemove", function(event) {
+    var move = function(event) {
       var newDirection = (event.pageX > width/2 ? 0 : 180)+Math.atan((event.pageY-height/2)/(event.pageX-width/2)) * 180/Math.PI;
       newDirection = Math.round(newDirection/20)*20;
       if(lastDirection != newDirection) {
         lastDirection = newDirection;
         socket.emit("direction", newDirection);
       }
-    });
-    $("#canvas").on("keydown", function(event) {
+    };
+    $("#canvas, #chat, #chatInput").mousemove(move);
+    $("#canvas").keydown(function(event) {
       if(event.which == 97 || event.which == 49)
         socket.emit("upgrade", "health");
       else if(event.which == 98 || event.which == 50)
@@ -170,6 +172,22 @@ $(function() {
         socket.emit("upgrade", "damage");
       else if(event.which == 100 || event.which == 52)
         socket.emit("upgrade", "regen");
+      else if(event.which == 13) {
+        $("#chatInput").focus();
+      }
+    });
+    $("#chatInput").keydown(function(event) {
+      if(event.which == 13) {
+        socket.emit("message", $(this).val());
+        $("#chat").append("<div>You: " + $("<span>").text($(this).val())[0].innerHTML + "</div>");
+        $(this).val("");
+        $("#canvas").focus();
+      }
+    });
+    socket.on("message", function(name, color, message) {
+      var nameSpan = $("<span>").text(name).css({color: color});
+      var messageSpan = $("<span>").text(": " + message);
+      $("#chat").append($("<div>").append(nameSpan).append(messageSpan));
     });
 
   };
