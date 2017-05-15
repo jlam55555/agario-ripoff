@@ -182,12 +182,14 @@ $(function() {
         $("#chat").append("<div>You: " + $("<span>").text($(this).val())[0].innerHTML + "</div>");
         $(this).val("");
         $("#canvas").focus();
+        $("#chat").scrollTop(1e5);
       }
     });
     socket.on("message", function(name, color, message) {
       var nameSpan = $("<span>").text(name).css({color: color});
       var messageSpan = $("<span>").text(": " + message);
       $("#chat").append($("<div>").append(nameSpan).append(messageSpan));
+      $("#chat").scrollTop(1e5);
     });
 
   };

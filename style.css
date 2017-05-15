@@ -63,6 +63,11 @@ button, input {
   overflow-y: hidden;
   background-color: rgba(52, 73, 94, 0.2);
   z-index: 1;
+  box-sizing: border-box;
+  padding: 15px;
+}
+#chat > div {
+  margin-top: 10px;
 }
 #chatInput {
   position: absolute;
